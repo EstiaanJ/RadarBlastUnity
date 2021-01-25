@@ -8,6 +8,8 @@ public class RadarEmitter : MonoBehaviour
     private float power = 1;
     [SerializeField]
     private float rotationRate = 0.0003f;
+
+
     private float currentAngle = 0;
     private RadarBeam radarBeam;
     // Start is called before the first frame update
@@ -43,7 +45,6 @@ public class RadarEmitter : MonoBehaviour
                 DrawPolygon(6, 0.08f * power, new Vector3(hit.point.x, hit.point.y, 0), 0.07f*power, 0.07f*power, lr);
                 Destroy(radHit, 3);
             }
-
         }
     }
 
@@ -93,7 +94,8 @@ public class RadarBeam
         beamLine.AddComponent<LineRenderer>();
         lr = beamLine.GetComponent<LineRenderer>();
         lr.material = new Material(Shader.Find("UI/Default"));
-        lr.SetWidth(0.06f * power, 0.06f * power);
+        lr.startWidth = 0.06f * power;
+        lr.endWidth = 0.06f * power;
         lr.material.color = Color.green;
         lr.startColor = Color.green;
         lr.endColor = Color.green;
