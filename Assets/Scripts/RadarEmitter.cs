@@ -34,7 +34,7 @@ public class RadarEmitter : MonoBehaviour
             if(hit.fraction > 0.00001 && itter < 1)
             {
                 itter++;
-                GameObject radHit = new GameObject();
+                GameObject radHit = new GameObject("RadarPing");
                 radHit.transform.position = new Vector2(hit.point.x, hit.point.y);
                 radHit.AddComponent<LineRenderer>();
                 LineRenderer lr = radHit.GetComponent<LineRenderer>();
@@ -83,7 +83,7 @@ public class RadarBeam
     {
         this.origin = origin;
         this.destination = destination;
-        GameObject beamLine = new GameObject();
+        GameObject beamLine = new GameObject("RadarBeam");
         beamLine.transform.position = origin;
         beamLine.AddComponent<LineRenderer>();
         lr = beamLine.GetComponent<LineRenderer>();
