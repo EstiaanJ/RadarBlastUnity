@@ -21,17 +21,17 @@ public class RadarEmitter : MonoBehaviour
     {
         this.currentAngle = Math.stepAngle(rotationRate, currentAngle, 1f/60f);
         radarBeam.updatePos(this.gameObject.transform.position,Math.fromPolar(this.power*1000, this.currentAngle));
-        detect();
+        Detect(this.gameObject.GetComponentInParent<Collider2D>());
     }
 
-    public void detect()
+    public void Detect(Collider2D collider)
     {
         List<RaycastHit2D> hitList = radarBeam.Cast();
 
 
         int itter = 0;
         foreach(RaycastHit2D hit in hitList){
-            if(hit.fraction > 0.00001 && itter < 1)
+            if(collider != hit.collider && itter < 1) 
             {
                 itter++;
                 GameObject radHit = new GameObject("RadarPing");
@@ -72,6 +72,11 @@ public class RadarEmitter : MonoBehaviour
         rotationRate = Mathf.Abs(rate);
     }
 }
+
+
+
+
+
 
 public class RadarBeam
 {
