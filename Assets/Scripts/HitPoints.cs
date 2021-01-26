@@ -29,6 +29,6 @@ public class HitPoints : MonoBehaviour
     public void Damage(float hpd)
     {
         hitPoints -= hpd;
-        //print("Damage! " + hitPoints);
+        print("Damage! " + hitPoints);
     }
 }

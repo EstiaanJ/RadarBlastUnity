@@ -9,9 +9,15 @@ public class RadarEmitter : MonoBehaviour
     [SerializeField]
     private float rotationRate = 0.0003f;
 
+    public float zoomFactor = 1;
+
+    public GameObject radarPing;
+    
+
 
     private float currentAngle = 0;
     private RadarBeam radarBeam;
+    private PlayerShipController psc;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +25,10 @@ public class RadarEmitter : MonoBehaviour
         //radarBeam = new RadarBeam(this.gameObject.transform.position, Math.fromPolar(this.power * 1000, this.currentAngle), power);
         gameObject.AddComponent<RadarBeam>();
         radarBeam = gameObject.GetComponent<RadarBeam>();
-        radarBeam.initiate(this.gameObject.transform.position, Math.fromPolar(this.power * 1000, this.currentAngle), power);
+        radarBeam.Initiate(this.gameObject.transform.position, Math.fromPolar(this.power * 1000, this.currentAngle), power);
+
+        psc = gameObject.GetComponentInParent<PlayerShipController>();
+        
     }
 
     // Update is called once per frame
@@ -28,6 +37,7 @@ public class RadarEmitter : MonoBehaviour
         this.currentAngle = Math.stepAngle(rotationRate, currentAngle, 1f/60f);
         radarBeam.UpdatePos(this.gameObject.transform.position,Math.fromPolar(this.power*1000, this.currentAngle));
         Detect(this.gameObject.GetComponentInParent<Collider2D>());
+        this.zoomFactor = psc.zoomFactor;
     }
 
     public void Detect(Collider2D collider)
@@ -40,14 +50,18 @@ public class RadarEmitter : MonoBehaviour
             if(collider != hit.collider && itter < 1) 
             {
                 itter++;
+                Instantiate(radarPing, new Vector3(hit.point.x, hit.point.y, 0), Quaternion.identity);
+                //Destroy(radarPing, 3);
+                /*
                 GameObject radHit = new GameObject("RadarPing");
                 radHit.transform.position = new Vector2(hit.point.x, hit.point.y);
                 radHit.AddComponent<LineRenderer>();
                 LineRenderer lr = radHit.GetComponent<LineRenderer>();
                 lr.material = new Material(Shader.Find("UI/Default"));
                 lr.material.color = Color.green;
-                DrawPolygon(6, 0.08f * power, new Vector3(hit.point.x, hit.point.y, 0), 0.07f*power, 0.07f*power, lr);
+                DrawPolygon(6, 0.08f * power * zoomFactor, new Vector3(hit.point.x, hit.point.y, 0), 0.07f*power *zoomFactor, 0.07f*power*zoomFactor, lr);
                 Destroy(radHit, 3);
+                */
             }
         }
     }

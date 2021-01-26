@@ -28,10 +28,10 @@ public class VisableRay : MonoBehaviour
 
     public void UpdatePos(Vector2 origin, Vector2 dest)
     {
-        this.destination = dest;
         this.origin = origin;
-        lr.SetPosition(0, origin);
-        lr.SetPosition(1, destination);
+        this.destination = dest;
+        lr.SetPosition(0, this.origin);
+        lr.SetPosition(1, this.destination);
     }
 
     public List<RaycastHit2D> Cast()
@@ -39,7 +39,7 @@ public class VisableRay : MonoBehaviour
         ContactFilter2D cf = new ContactFilter2D();
         cf.NoFilter();
         List<RaycastHit2D> hitList = new List<RaycastHit2D>();
-        Physics2D.Raycast(origin, destination, cf, hitList, destination.magnitude);
+        Physics2D.Raycast(origin, destination, cf, hitList,destination.magnitude);
         return hitList;
     }
 }
@@ -53,7 +53,7 @@ public class RadarBeam : VisableRay
 
     }
 
-    public void initiate(Vector2 origin, Vector2 destination, float power)
+    public void Initiate(Vector2 origin, Vector2 destination, float power)
     {
         base.Initiate(origin, destination);
         lr.startWidth = 0.06f * power;
@@ -101,16 +101,6 @@ public class LaserBeam : VisableRay
                     {
                         hp.Damage(this.power * 3);
                     }
-
-
-                    /*GameObject radHit = new GameObject("RadarPing");
-                    radHit.transform.position = new Vector2(hit.point.x, hit.point.y);
-                    radHit.AddComponent<LineRenderer>();
-                    LineRenderer lr = radHit.GetComponent<LineRenderer>();
-                    lr.material = new Material(Shader.Find("UI/Default"));
-                    lr.material.color = Color.green;
-                    DrawPolygon(6, 0.08f * power, new Vector3(hit.point.x, hit.point.y, 0), 0.07f * power, 0.07f * power, lr);
-                    Destroy(radHit, 3);*/
                 }
             }
         } else

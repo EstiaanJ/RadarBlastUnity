@@ -46,6 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   power: 1
   rotationRate: 0.00005
+  zoomFactor: 1
+  radarPing: {fileID: 1394178568271490181, guid: 18a73a9ef5a85b84d8728e907b550fe3,
+    type: 3}
 --- !u!120 &676480565096454801
 LineRenderer:
   m_ObjectHideFlags: 0

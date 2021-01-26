@@ -13,6 +13,8 @@ public class PlayerShipController : MonoBehaviour
     public GameObject dumbfire;
     public LaserBeam laserBeam;
 
+    public float zoomFactor = 1;
+
 
     private bool hasFired = false;
 
@@ -41,6 +43,8 @@ public class PlayerShipController : MonoBehaviour
 
         float fireMain = Input.GetAxis("FireMain");
 
+        float zoomLevel = Input.GetAxis("Zoom");
+
         ThrustForward(yAxis * maxForce);
         ThrustSideways(translate * maxForce);
         Rotate(transform, xAxis * rotationSpeed);
@@ -49,6 +53,25 @@ public class PlayerShipController : MonoBehaviour
         ZeroTurn(zeroTurn);
 
         FireMain(fireMain);
+
+        Zoom(zoomLevel);
+    }
+
+    #endregion
+
+    #region Other Controls
+    void Zoom(float zoomLevel)
+    {
+        Camera cam = gameObject.GetComponentInChildren<Camera>();
+        
+        cam.orthographicSize += zoomLevel;
+        
+        if(cam.orthographicSize <= 0)
+        {
+            cam.orthographicSize = 0.1f;
+        }
+        zoomFactor = cam.orthographicSize/10;
+
     }
 
     #endregion
@@ -56,31 +79,13 @@ public class PlayerShipController : MonoBehaviour
     #region Weaponfire API
     private void FireDumbfire(float fireMain)
     {
-        if (fireMain != 0 && !hasFired)
-        {
-            hasFired = true;
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Instantiate(dumbfire, new Vector3(2, 10, 0), Quaternion.LookRotation(new Vector3(0, 0, 1), Math.fromPolar(1, Math.bearingTo(new Vector2(2, 10), mouseWorldPos))));
-            dumbfire.GetComponent<Dumbfire>().SetTarget(mouseWorldPos);
-        }
-        if (fireMain == 0)
-        {
-            hasFired = false;
-        }
+
     }
 
 
     private void FireRailgun(float fireMain)
     {
-        if (fireMain != 0 && !hasFired)
-        {
-           
-            
-        }
-        if (fireMain == 0)
-        {
-            hasFired = false;
-        }
+
     }
 
     private void FireLaser(float fireMain)
@@ -101,7 +106,7 @@ public class PlayerShipController : MonoBehaviour
         }
         if(laserBeam != null)
         {
-            laserBeam.UpdatePos(gameObject.transform.position, mouseWorldPos);
+            laserBeam.UpdatePos(gameObject.GetComponentInParent<Rigidbody2D>().position, mouseWorldPos);
             laserBeam.Fire(gameObject.GetComponent<Collider2D>());
         }
     }
