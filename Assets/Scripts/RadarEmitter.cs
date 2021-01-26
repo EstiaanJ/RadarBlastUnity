@@ -15,14 +15,18 @@ public class RadarEmitter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       radarBeam = new RadarBeam(this.gameObject.transform.position,Math.fromPolar(this.power * 1000,this.currentAngle),power);
+        //radarBeam = this.gameObject.AddComponent(new RadarBeam(this.gameObject.transform.position, Math.fromPolar(this.power * 1000, this.currentAngle), power));//new 
+        //radarBeam = new RadarBeam(this.gameObject.transform.position, Math.fromPolar(this.power * 1000, this.currentAngle), power);
+        gameObject.AddComponent<RadarBeam>();
+        radarBeam = gameObject.GetComponent<RadarBeam>();
+        radarBeam.initiate(this.gameObject.transform.position, Math.fromPolar(this.power * 1000, this.currentAngle), power);
     }
 
     // Update is called once per frame
     void Update()
     {
         this.currentAngle = Math.stepAngle(rotationRate, currentAngle, 1f/60f);
-        radarBeam.updatePos(this.gameObject.transform.position,Math.fromPolar(this.power*1000, this.currentAngle));
+        radarBeam.UpdatePos(this.gameObject.transform.position,Math.fromPolar(this.power*1000, this.currentAngle));
         Detect(this.gameObject.GetComponentInParent<Collider2D>());
     }
 
@@ -79,44 +83,4 @@ public class RadarEmitter : MonoBehaviour
 
 
 
-public class RadarBeam
-{
-    private Vector2 origin; //Where the beam originates from
-    private Vector2 destination; //The direction and range of the beam
-    LineRenderer lr;
 
-    public RadarBeam(Vector2 origin, Vector2 destination, float power)
-    {
-        this.origin = origin;
-        this.destination = destination;
-        GameObject beamLine = new GameObject("RadarBeam");
-        beamLine.transform.position = origin;
-        beamLine.AddComponent<LineRenderer>();
-        lr = beamLine.GetComponent<LineRenderer>();
-        lr.material = new Material(Shader.Find("UI/Default"));
-        lr.startWidth = 0.06f * power;
-        lr.endWidth = 0.06f * power;
-        lr.material.color = Color.green;
-        lr.startColor = Color.green;
-        lr.endColor = Color.green;
-        lr.SetPosition(0, origin);
-        lr.SetPosition(1, destination);
-    }
-
-    public void updatePos(Vector2 origin,Vector2 dest)
-    {
-        this.destination = dest;
-        this.origin = origin;
-        lr.SetPosition(0, origin);
-        lr.SetPosition(1, destination);
-    }
-
-    public List<RaycastHit2D> Cast()
-    {
-        ContactFilter2D cf = new ContactFilter2D();
-        cf.NoFilter();
-        List<RaycastHit2D> hitList = new List<RaycastHit2D>();
-        Physics2D.Raycast(origin, destination, cf, hitList, destination.magnitude);
-        return hitList;
-    }
-}

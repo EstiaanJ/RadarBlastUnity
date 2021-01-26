@@ -28,6 +28,24 @@ public class Math : MonoBehaviour
         return (Mathf.PI / 2.0f) - angle;
     }
 
+    public static float flippedAtan2(float y, float x)
+    {
+        float angle = Mathf.Atan2(y, x);
+        float flippedAngle = flipAngle(angle);
+        if(flippedAngle >= 0)
+        {
+            return flippedAngle;
+        } else
+        {
+            return flippedAngle + 2 * Mathf.PI;
+        }
+    }
+
+    public static float bearingTo(Vector2 originVec, Vector2 targetVec)
+    {
+        return flippedAtan2(targetVec.y - originVec.y, targetVec.x - originVec.x);
+    }
+
     public static float stepAngle(float angularVelocity, float angle, float deltaTime)
     {
         return angle + (angularVelocity / deltaTime);

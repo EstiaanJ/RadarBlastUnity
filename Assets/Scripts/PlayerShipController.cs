@@ -11,6 +11,7 @@ public class PlayerShipController : MonoBehaviour
     float maxForce = 0.6f;
 
     public GameObject dumbfire;
+    public LaserBeam laserBeam;
 
 
     private bool hasFired = false;
@@ -22,6 +23,8 @@ public class PlayerShipController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        
+        gameObject.AddComponent<LaserBeam>();
     }
 
     // Update is called once per frame
@@ -44,24 +47,75 @@ public class PlayerShipController : MonoBehaviour
         ZeroTurn(zeroTurn);
 
         FireMain(fireMain);
-        
+    }
+
+    #endregion
+
+    #region Weaponfire API
+    private void FireDumbfire(float fireMain)
+    {
+        if (fireMain != 0 && !hasFired)
+        {
+            hasFired = true;
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Instantiate(dumbfire, new Vector3(2, 10, 0), Quaternion.LookRotation(new Vector3(0, 0, 1), Math.fromPolar(1, Math.bearingTo(new Vector2(2, 10), mouseWorldPos))));
+            dumbfire.GetComponent<Dumbfire>().SetTarget(mouseWorldPos);
+        }
+        if (fireMain == 0)
+        {
+            hasFired = false;
+        }
+    }
 
 
+    private void FireRailgun(float fireMain)
+    {
+        if (fireMain != 0 && !hasFired)
+        {
+           
+            
+        }
+        if (fireMain == 0)
+        {
+            hasFired = false;
+        }
+    }
+
+    private void FireLaser(float fireMain)
+    {
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (fireMain != 0 && !hasFired)
+        {
+            print("Was here");
+            laserBeam = gameObject.GetComponent<LaserBeam>();
+            laserBeam.Initiate(gameObject.transform.position, mouseWorldPos, fireMain);
+        }
+        if (fireMain == 0)
+        {
+            hasFired = false;
+            if(laserBeam != null)
+            {
+                laserBeam = null;
+                
+            }
+        }
+        if(laserBeam != null)
+        {
+            laserBeam.UpdatePos(gameObject.transform.position, mouseWorldPos);
+            laserBeam.Fire(gameObject.GetComponent<Collider2D>());
+        }
     }
     #endregion
+
+
 
     #region ManeurveringAPI
     private void FireMain(float fireMain)
     {
-        if(fireMain != 0 && !hasFired)
-        {
-            hasFired = true;
-            Instantiate(dumbfire, new Vector3(10, 0, 0), Quaternion.identity);
-        }
-        if(fireMain == 0)
-        {
-           hasFired = false;
-        }
+        FireLaser(fireMain);
+        /* For firing dumbfire missiles BROKEN
+        
+        */
     }
 
     private void ZeroSpeed(float zeroSpeed)
@@ -75,7 +129,6 @@ public class PlayerShipController : MonoBehaviour
             rb.angularDrag = 0;
             rb.drag = 0;
         }
-
     }
 
     private void ZeroTurn(float zeroTurn)
@@ -84,7 +137,6 @@ public class PlayerShipController : MonoBehaviour
         {
             rb.angularDrag = 2 * maxForce;
         } 
-
     }
 
     private void ThrustForward(float amount)
@@ -104,4 +156,7 @@ public class PlayerShipController : MonoBehaviour
     }
 
     #endregion
+
 }
+
+
