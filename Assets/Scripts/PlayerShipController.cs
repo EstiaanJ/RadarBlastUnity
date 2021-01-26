@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShipController : MonoBehaviour
+public class PlayerShipController : MonoBehaviour
 {
 
     [SerializeField]
     float rotationSpeed = 0.1f;
     [SerializeField]
     float maxForce = 0.6f;
-    //float maxXForce = 0.1f;
+
+    public GameObject dumbfire;
+
+
+    private bool hasFired = false;
+
+
     #region Monobehaviour
     private Rigidbody2D rb;
     // Start is called before the first frame update
@@ -24,8 +30,11 @@ public class ShipController : MonoBehaviour
         float yAxis = Input.GetAxis("Vertical");
         float xAxis = Input.GetAxis("Horizontal");
         float translate = Input.GetAxis("Translate");
+
         float zeroSpeed = Input.GetAxis("ZeroSpeed");
         float zeroTurn = Input.GetAxis("ZeroTurn");
+
+        float fireMain = Input.GetAxis("FireMain");
 
         ThrustForward(yAxis * maxForce);
         ThrustSideways(translate * maxForce);
@@ -33,6 +42,8 @@ public class ShipController : MonoBehaviour
         
         ZeroSpeed(zeroSpeed);
         ZeroTurn(zeroTurn);
+
+        FireMain(fireMain);
         
 
 
@@ -40,9 +51,17 @@ public class ShipController : MonoBehaviour
     #endregion
 
     #region ManeurveringAPI
-    private void ClampVelocity()
+    private void FireMain(float fireMain)
     {
-
+        if(fireMain != 0 && !hasFired)
+        {
+            hasFired = true;
+            Instantiate(dumbfire, new Vector3(10, 0, 0), Quaternion.identity);
+        }
+        if(fireMain == 0)
+        {
+           hasFired = false;
+        }
     }
 
     private void ZeroSpeed(float zeroSpeed)
