@@ -25,6 +25,8 @@ public class PlayerShipController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         
         gameObject.AddComponent<LaserBeam>();
+        laserBeam = gameObject.GetComponent<LaserBeam>();
+        laserBeam.Initiate(gameObject.transform.position, gameObject.transform.position, 1);
     }
 
     // Update is called once per frame
@@ -86,17 +88,15 @@ public class PlayerShipController : MonoBehaviour
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         if (fireMain != 0 && !hasFired)
         {
-            print("Was here");
-            laserBeam = gameObject.GetComponent<LaserBeam>();
-            laserBeam.Initiate(gameObject.transform.position, mouseWorldPos, fireMain);
+            hasFired = true;
+            laserBeam.isActive = true;
         }
         if (fireMain == 0)
         {
             hasFired = false;
             if(laserBeam != null)
             {
-                laserBeam = null;
-                
+                laserBeam.isActive = false;
             }
         }
         if(laserBeam != null)

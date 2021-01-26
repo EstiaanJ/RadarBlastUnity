@@ -20,7 +20,7 @@ public class HitPoints : MonoBehaviour
         if(hitPoints <= 0)
         {
             //Destroy(gameObject.)
-            print("DESTROY");
+            //print("DESTROY");
             Destroy(this);
             Destroy(this.gameObject);
         }
@@ -29,6 +29,6 @@ public class HitPoints : MonoBehaviour
     public void Damage(float hpd)
     {
         hitPoints -= hpd;
-        print("Damage! " + hitPoints);
+        //print("Damage! " + hitPoints);
     }
 }

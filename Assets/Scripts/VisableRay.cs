@@ -70,6 +70,7 @@ public class RadarBeam : VisableRay
 public class LaserBeam : VisableRay
 {
     private float power;
+    public bool isActive = false;
     public void Initiate(Vector2 origin, Vector2 destination, float power)
     {
         base.Initiate(origin, destination);
@@ -85,29 +86,36 @@ public class LaserBeam : VisableRay
 
     public void Fire(Collider2D collider)
     {
-        List<RaycastHit2D> hitList = base.Cast();
-        int itter = 0;
-        foreach (RaycastHit2D hit in hitList)
+        if (isActive)
         {
-            if (collider != hit.collider && itter < 1)
+            lr.enabled = true;
+            List<RaycastHit2D> hitList = base.Cast();
+            int itter = 0;
+            foreach (RaycastHit2D hit in hitList)
             {
-                itter++;
-                HitPoints hp = hit.collider.gameObject.GetComponentInParent<HitPoints>();
-                if(hp != null)
+                if (collider != hit.collider && itter < 1)
                 {
-                    hp.Damage(this.power * 100);
+                    itter++;
+                    HitPoints hp = hit.collider.gameObject.GetComponentInParent<HitPoints>();
+                    if (hp != null)
+                    {
+                        hp.Damage(this.power * 3);
+                    }
+
+
+                    /*GameObject radHit = new GameObject("RadarPing");
+                    radHit.transform.position = new Vector2(hit.point.x, hit.point.y);
+                    radHit.AddComponent<LineRenderer>();
+                    LineRenderer lr = radHit.GetComponent<LineRenderer>();
+                    lr.material = new Material(Shader.Find("UI/Default"));
+                    lr.material.color = Color.green;
+                    DrawPolygon(6, 0.08f * power, new Vector3(hit.point.x, hit.point.y, 0), 0.07f * power, 0.07f * power, lr);
+                    Destroy(radHit, 3);*/
                 }
-
-
-                /*GameObject radHit = new GameObject("RadarPing");
-                radHit.transform.position = new Vector2(hit.point.x, hit.point.y);
-                radHit.AddComponent<LineRenderer>();
-                LineRenderer lr = radHit.GetComponent<LineRenderer>();
-                lr.material = new Material(Shader.Find("UI/Default"));
-                lr.material.color = Color.green;
-                DrawPolygon(6, 0.08f * power, new Vector3(hit.point.x, hit.point.y, 0), 0.07f * power, 0.07f * power, lr);
-                Destroy(radHit, 3);*/
             }
+        } else
+        {
+            lr.enabled = false;
         }
     }
 
